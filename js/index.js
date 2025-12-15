@@ -82,7 +82,7 @@ function productSelectHanlder(e) {
 
 function discardBtnHandler(e) {
   e.preventDefault();
-  const id = e.target["href"].split("/")[3];
+  const id = e.target.dataset.id;
   console.log("id:", id);
   // /api/livejs/v1/customer/{api_path}/carts/{id}
 
@@ -137,7 +137,7 @@ function renderCartTable(carts, finalTotal) {
                       cart.product.price * cart.quantity
                     ).toLocaleString()}</td>
                     <td class="discardBtn">
-                      <a href="${cart.id}" class="material-icons"> clear </a>
+                      <a href="#" data-id="${cart.id}" class="material-icons"> clear </a>
                     </td>
                   </tr>
                   `;
