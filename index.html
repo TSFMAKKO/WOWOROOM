@@ -1470,20 +1470,23 @@
       function closeMenu() {
         menu.classList.remove("openMenu");
       }
-
     </script>
 
     <script>
-           const baseUrl = "https://livejs-api.hexschool.io";
+      const baseUrl = "https://livejs-api.hexschool.io";
 
       const productWrapDOM = document.querySelector(".productWrap");
       const productSelect = document.querySelector(".productSelect");
       const shoppingCartTableDOM = document.querySelector(
         ".shoppingCart-table"
       );
+
+      const orderInfoForm = document.querySelector(".orderInfo-form");
+
       console.log("productWrapDOM:", productWrapDOM);
       console.log("productSelect:", productSelect);
       console.log("shoppingCartTableDOM:", shoppingCartTableDOM);
+      console.log("orderInfoForm:", orderInfoForm);
 
       let products = [];
       //   /api/livejs/v1/customer/{api_path}/carts
@@ -1493,18 +1496,18 @@
         let html = ``;
         products.forEach((product) => {
           html += `
-               </li>
-                    <li class="productCard">
-                    <h4 class="productType">${product.category}</h4>
-                    <img
-                        src="${product.images}"
-                        alt="${product.id}"
-                    />
-                    <a href="${product.id}" class="addCardBtn">加入購物車</a>
-                    <h3>${product.title}</h3>
-                    <del class="originPrice">NT$${product.origin_price}</del>
-                    <p class="nowPrice">NT$${product.price}</p>
-                `;
+                     </li>
+                          <li class="productCard">
+                          <h4 class="productType">${product.category}</h4>
+                          <img
+                              src="${product.images}"
+                              alt="${product.id}"
+                          />
+                          <a href="${product.id}" class="addCardBtn">加入購物車</a>
+                          <h3>${product.title}</h3>
+                          <del class="originPrice">NT$${product.origin_price}</del>
+                          <p class="nowPrice">NT$${product.price}</p>
+                      `;
         });
         productWrapDOM.innerHTML = html;
       }
@@ -1520,23 +1523,22 @@
         renderCards(categorys);
       }
 
-
       function discardBtnHandler(e) {
         e.preventDefault();
         const id = e.target["href"].split("/")[3];
         console.log("id:", id);
         // /api/livejs/v1/customer/{api_path}/carts/{id}
 
-        const apiPath=`${baseUrl}/api/livejs/v1/customer/yuschool/carts/${id}`
+        const apiPath = `${baseUrl}/api/livejs/v1/customer/yuschool/carts/${id}`;
         axios
           .delete(apiPath)
           .then((response) => {
             console.log(`刪除${id} res:`, response.data);
             renderCartTable(response.data.carts, response.data.finalTotal);
-          }).catch(error=>{
-            console.log("error:",error);
-            
           })
+          .catch((error) => {
+            console.log("error:", error);
+          });
       }
 
       function discardAllBtnHandler(e) {
@@ -1551,13 +1553,11 @@
         //   "finalTotal": 0,
         //   "message": "購物車產品已全部清空。 (*´▽`*)"
         // }
-        const apiPath=`${baseUrl}/api/livejs/v1/customer/yuschool/carts`
-        axios
-          .delete(apiPath)
-          .then((response) => {
-            console.log("全部刪除 res:", response.data);
-            renderCartTable(response.data.carts, response.data.finalTotal);
-          });
+        const apiPath = `${baseUrl}/api/livejs/v1/customer/yuschool/carts`;
+        axios.delete(apiPath).then((response) => {
+          console.log("全部刪除 res:", response.data);
+          renderCartTable(response.data.carts, response.data.finalTotal);
+        });
 
         // 在呼叫一次 randerCartTable()
       }
@@ -1567,38 +1567,38 @@
         let html = ``;
         carts.forEach((cart) => {
           html += `
-             <tr>
-              <td>
-                <div class="cardItem-title">
-                  <img src="https://i.imgur.com/HvT3zlU.png" alt="" />
-                  <p>${cart.product.title}</p>
-                </div>
-              </td>
-              <td>NT$${cart.product.price.toLocaleString()}</td>
-              <td>${cart.quantity}</td>
-              <td>NT$${(
-                cart.product.price * cart.quantity
-              ).toLocaleString()}</td>
-              <td class="discardBtn">
-                <a href="${cart.id}" class="material-icons"> clear </a>
-              </td>
-            </tr>
-            `;
+                   <tr>
+                    <td>
+                      <div class="cardItem-title">
+                        <img src="https://i.imgur.com/HvT3zlU.png" alt="" />
+                        <p>${cart.product.title}</p>
+                      </div>
+                    </td>
+                    <td>NT$${cart.product.price.toLocaleString()}</td>
+                    <td>${cart.quantity}</td>
+                    <td>NT$${(
+                      cart.product.price * cart.quantity
+                    ).toLocaleString()}</td>
+                    <td class="discardBtn">
+                      <a href="${cart.id}" class="material-icons"> clear </a>
+                    </td>
+                  </tr>
+                  `;
         });
         shoppingCartTableDOM.querySelector("tbody").innerHTML = html;
         shoppingCartTableDOM.querySelector("tfoot").innerHTML = `
-             <tr>
-              <td>
-                <a href="#" class="discardAllBtn">刪除所有品項</a>
-              </td>
-              <td></td>
-              <td></td>
-              <td>
-                <p>總金額</p>
-              </td>
-              <td>NT$${finalTotal.toLocaleString()}</td>
-            </tr>
-        `;
+                   <tr>
+                    <td>
+                      <a href="#" class="discardAllBtn">刪除所有品項</a>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                      <p>總金額</p>
+                    </td>
+                    <td>NT$${finalTotal.toLocaleString()}</td>
+                  </tr>
+              `;
         // discardBtn
         const discardBtns =
           shoppingCartTableDOM.querySelectorAll(".discardBtn");
@@ -1613,6 +1613,53 @@
         discardAllBtn.addEventListener("click", discardAllBtnHandler);
       }
 
+      function orderInfoHabndler(e) {
+        e.preventDefault();
+        console.log("e:", e.target["姓名"].value);
+        const name = e.target["姓名"].value.trim();
+        const tel = e.target["電話"].value.trim();
+        const email = e.target["Email"].value.trim();
+        const address = e.target["寄送地址"].value.trim();
+        const payment = e.target["交易方式"].value.trim();
+
+        console.log(name, tel, email, address, payment);
+
+        let payload = {
+          data: {
+            user: {
+              name,
+              tel,
+              email,
+              address,
+              payment,
+            },
+          },
+        };
+
+        console.log("payload", payload);
+        const apiPath = `${baseUrl}/api/livejs/v1/customer/yuschool/orders`;
+        console.log("apiPath", apiPath);
+
+        axios
+          .post(apiPath, payload)
+          .then((response) => {
+            console.log("訂單回應:", response.data);
+            if (response.data.status) {
+              alert("訂單建立成功！");
+            } else {
+              alert(response.data.message);
+            }
+          })
+          .catch((error) => {
+            console.error("錯誤:", error);
+            if (error.response) {
+              console.error("錯誤回應:", error.response.data);
+              alert(error.response.data.message);
+            } else {
+              alert("訂單建立失敗");
+            }
+          });
+      }
       function init() {
         axios
           .get(
@@ -1650,6 +1697,8 @@
             // 失敗會回傳的內容
             console.log(error);
           });
+
+        orderInfoForm.addEventListener("submit", orderInfoHabndler);
       }
 
       init();
