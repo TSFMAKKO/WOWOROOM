@@ -15,6 +15,35 @@ let products = [];
 //   /api/livejs/v1/customer/{api_path}/carts
 let carts = [];
 
+function addCardBtnHandler(e) {
+  e.preventDefault();
+  console.log("e:", e.target.dataset.id);
+  const product_id = e.target.dataset.id;
+  //   /api/livejs/v1/customer/{api_path}/carts
+  const apiPath = `${baseUrl}/api/livejs/v1/customer/yuschool/carts`;
+  //   檢查 carts 是否有。假如沒有就新增。假如有就要 原有數量+=1 再送出
+
+  const product = carts.filter((p) => p.product.id === product_id);
+  console.log("product", product);
+  let quantity = (Number(product[0]?.quantity) || 0) + 1;
+
+  console.log("quantity:", quantity);
+
+  const payload = {
+    data: {
+      productId: product_id,
+      quantity: quantity,
+    },
+  };
+  axios.post(apiPath, payload).then((res) => {
+    console.log("res:", res);
+
+    carts = res.data.carts;
+    const finalTotal = res.data.finalTotal;
+    renderCartTable(carts, finalTotal);
+  });
+}
+
 function renderCards(products) {
   let html = ``;
   products.forEach((product) => {
@@ -26,13 +55,18 @@ function renderCards(products) {
                               src="${product.images}"
                               alt="${product.id}"
                           />
-                          <a href="${product.id}" class="addCardBtn">加入購物車</a>
+                          <a href="#" data-id="${product.id}" class="addCardBtn">加入購物車</a>
                           <h3>${product.title}</h3>
                           <del class="originPrice">NT$${product.origin_price}</del>
                           <p class="nowPrice">NT$${product.price}</p>
                       `;
   });
   productWrapDOM.innerHTML = html;
+  const addCardBtns = productWrapDOM.querySelectorAll(".addCardBtn");
+
+  addCardBtns.forEach((Btn) => {
+    Btn.addEventListener("click", addCardBtnHandler);
+  });
 }
 
 function productSelectHanlder(e) {
