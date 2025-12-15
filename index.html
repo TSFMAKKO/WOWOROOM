@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WOWOROOM</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap"
@@ -1265,72 +1266,6 @@
           <del class="originPrice">NT$18,000</del>
           <p class="nowPrice">NT$12,000</p>
         </li>
-        <li class="productCard">
-          <h4 class="productType">新品</h4>
-          <img
-            src="https://hexschool-api.s3.us-west-2.amazonaws.com/custom/tTQQggBAfhl0vEeM7WmTwij1JbAwC7MBD2TSyjHbZHvBjnLU5tOtoGszOmODOEu6DRjzdjIpcEzeCCkmRWaL8JDJwaaWglER7P3V4JXKT7FT5gm0UL45CaHpSVlEXbKK.png"
-            alt=""
-          />
-          <a href="#" class="addCardBtn">加入購物車</a>
-          <h3>Antony 雙人床架／雙人加大</h3>
-          <del class="originPrice">NT$18,000</del>
-          <p class="nowPrice">NT$12,000</p>
-        </li>
-        <li class="productCard">
-          <h4 class="productType">新品</h4>
-          <img
-            src="https://hexschool-api.s3.us-west-2.amazonaws.com/custom/xgI6wM3uUCpkEEcauvHs67BFjGqG6Qxa9JTfOZTys6C0yJjqw5c8nJuA31gX77YVf04kZotGP9ZFQU7hLXkuoaRwNSssScpFnzfyPzYKODuyhw2QJrT1bDSim7aOBryv.png"
-            alt=""
-          />
-          <a href="#" class="addCardBtn">加入購物車</a>
-          <h3>Antony 雙人床架／雙人加大</h3>
-          <del class="originPrice">NT$18,000</del>
-          <p class="nowPrice">NT$12,000</p>
-        </li>
-        <li class="productCard">
-          <h4 class="productType">新品</h4>
-          <img
-            src="https://hexschool-api.s3.us-west-2.amazonaws.com/custom/Zr4h1Oqvc6NtAnpe5pNqJfGYyBJshAlKctfv0BTAZBqVAuvfSAWk4bcidBd8qBu1lRn5TWvib6O3UbmIAEt5w8SdB94GuFplZn6IM4SBvtxWJA2VnOqvQOsKungCPDXv.png"
-            alt=""
-          />
-          <a href="#" class="addCardBtn">加入購物車</a>
-          <h3>Antony 雙人床架／雙人加大</h3>
-          <del class="originPrice">NT$18,000</del>
-          <p class="nowPrice">NT$12,000</p>
-        </li>
-        <li class="productCard">
-          <h4 class="productType">新品</h4>
-          <img
-            src="https://hexschool-api.s3.us-west-2.amazonaws.com/custom/Tx99wDepg56aO5dGH7uGpU7REZwQLd1W0ec43M6cFw3o3z4eXTbeovq8WVseZ476BntlQnPPzaqkZgoj7xITviHMqf0kiAetjxyvuLiTmr7WdulcL364MTL321qZRJkP.png"
-            alt=""
-          />
-          <a href="#" class="addCardBtn">加入購物車</a>
-          <h3>Antony 雙人床架／雙人加大</h3>
-          <del class="originPrice">NT$18,000</del>
-          <p class="nowPrice">NT$12,000</p>
-        </li>
-        <li class="productCard">
-          <h4 class="productType">新品</h4>
-          <img
-            src="https://hexschool-api.s3.us-west-2.amazonaws.com/custom/VYPOpg83Jg7Ft5raI0eyzs6xSz0ttKzSJSklFq7il0HdwJ1iQ9kLHAU19rmkSapmyzRErTm1sxWO725W7CnowkRjwxgSyyRBo1ihGLwNbfYtgbo2nCTY9sarjqoxQbYX.png"
-            alt=""
-          />
-          <a href="#" class="addCardBtn">加入購物車</a>
-          <h3>Antony 雙人床架／雙人加大</h3>
-          <del class="originPrice">NT$18,000</del>
-          <p class="nowPrice">NT$12,000</p>
-        </li>
-        <li class="productCard">
-          <h4 class="productType">新品</h4>
-          <img
-            src="https://hexschool-api.s3.us-west-2.amazonaws.com/custom/XWnC8Of71WeSvCbkGy5MvZSyCrim50F9njuwHypcbiimd8tWscxGdecRAyaNheboQkqQAiCWK12GwuwMBvEtAarU2Y7mKTwKZIqhIExyQzbAbls7NTOdN2vX1OAyEaAN.png"
-            alt=""
-          />
-          <a href="#" class="addCardBtn">加入購物車</a>
-          <h3>Antony 雙人床架／雙人加大</h3>
-          <del class="originPrice">NT$18,000</del>
-          <p class="nowPrice">NT$12,000</p>
-        </li>
       </ul>
     </section>
     <section class="shoppingCart">
@@ -1501,6 +1436,63 @@
       function closeMenu() {
         menu.classList.remove("openMenu");
       }
+
+      const productWrapDOM = document.querySelector(".productWrap");
+      const productSelect = document.querySelector(".productSelect");
+      console.log("productWrapDOM:", productWrapDOM);
+      console.log("productSelect:", productSelect);
+
+      let products = [];
+
+      function renderCards(products) {
+        let html = ``;
+        products.forEach((product) => {
+          html += `
+               </li>
+                    <li class="productCard">
+                    <h4 class="productType">${product.category}</h4>
+                    <img
+                        src="${product.images}"
+                        alt="${product.id}"
+                    />
+                    <a href="${product.id}" class="addCardBtn">加入購物車</a>
+                    <h3>${product.title}</h3>
+                    <del class="originPrice">NT$${product.origin_price}</del>
+                    <p class="nowPrice">NT$${product.price}</p>
+                `;
+        });
+        productWrapDOM.innerHTML = html;
+      }
+
+      function productSelectHanlder(e) {
+        let category = e.target.value;
+        console.log("category:", category);
+        let categorys = products.filter((p) => p.category === category);
+        console.log("categorys:", categorys);
+
+        if (category === "全部") categorys = products;
+
+        renderCards(categorys);
+      }
+
+      axios
+        .get(
+          "https://livejs-api.hexschool.io/api/livejs/v1/customer/yuschool/products"
+        )
+        .then(function (response) {
+          // 成功會回傳的內容
+          if (response.data.status) {
+            products = response.data.products;
+            console.log("products", products);
+            renderCards(products);
+
+            productSelect.addEventListener("change", productSelectHanlder);
+          }
+        })
+        .catch(function (error) {
+          // 失敗會回傳的內容
+          console.log(error);
+        });
     </script>
   </body>
 </html>
