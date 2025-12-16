@@ -111,9 +111,7 @@ function renderOrderPageTable(orders) {
     let productsHtml = ``;
     el.products.forEach((product) => {
       productsHtml += `<p>${product.title} x ${product.quantity}</p>`;
-      //   chartObj[product.title] = (chartObj[product.title] || 0) + 1;
-
-      chartObj[product.title] = product.quantity;
+        chartObj[product.title] = (chartObj[product.title] || 0) + product.quantity;
     });
 
     html += `
