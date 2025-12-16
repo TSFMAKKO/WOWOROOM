@@ -85,7 +85,7 @@ function orderStatusBtnHandler(e) {
 
 function renderChart() {
   let chart = c3.generate({
-    bindto: "#chart", // HTML 元素綁定
+    bindto: "#chart", 
     data: {
       type: "pie",
       columns: chartArr,
