@@ -5,6 +5,8 @@ const orderPageTable = document.querySelector(".orderPage-table");
 const discardAllBtn = document.querySelector(".discardAllBtn");
 
 let discardBtns;
+let chartObj = {};
+let chartArr = [];
 
 console.log("topBarMeun:", topBarMeun[0]);
 
@@ -87,6 +89,9 @@ function renderOrderPageTable(orders) {
     let productsHtml = ``;
     el.products.forEach((product) => {
       productsHtml += `<p>${product.title} x ${product.quantity}</p>`;
+      //   chartObj[product.title] = (chartObj[product.title] || 0) + 1;
+
+      chartObj[product.title] = product.quantity;
     });
 
     html += `
@@ -131,6 +136,9 @@ function renderOrderPageTable(orders) {
   orderStatus.forEach((btn) => {
     btn.addEventListener("click", orderStatusBtnHandler);
   });
+
+  chartArr = Object.entries(chartObj);
+  console.log("chartArr", chartArr);
 }
 
 function adminDiscardAllBtnHandler(e) {
