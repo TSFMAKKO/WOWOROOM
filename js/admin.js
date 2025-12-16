@@ -39,6 +39,48 @@ function orderBtnHandler(e) {
     });
 }
 
+function orderStatusBtnHandler(e) {
+  e.preventDefault();
+  const id = e.target.dataset.id;
+  let paid = e.target.dataset.paid;
+  console.log("id:", id);
+  console.log("padi:", paid, typeof paid);
+
+  paid = paid === "true" ? true : false;
+  console.log("padi:", paid, typeof paid);
+  // /api/livejs/v1/admin/{api_path}/orders
+  const apiPath = `${baseUrl}/api/livejs/v1/admin/yuschool/orders`;
+  //   {
+  //   "data": {
+  //     "id": "訂單 ID (String)",
+  //     "paid": true
+  //   }
+  // }
+
+  let isChange = confirm(`確認修改成 ${!paid}`);
+
+  if (isChange) {
+    const payload = {
+      data: {
+        id,
+        paid: !paid,
+      },
+    };
+
+    axios
+      .put(apiPath, payload, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("res:", res.data);
+        orders = res.data.orders;
+        renderOrderPageTable(orders);
+      });
+  }
+}
+
 function renderOrderPageTable(orders) {
   let html = ``;
   orders.forEach((el) => {
@@ -63,23 +105,31 @@ function renderOrderPageTable(orders) {
               "zh-TW"
             )}</td>
             <td class="orderStatus">
-              <a href="#">${el.paid ? "已付款" : "未處理"}</a>
+              <a href="#" data-id="${el.id}" data-paid="${el.paid}">${
+      el.paid ? "已付款" : "未處理"
+    }</a>
             </td>
             <td>
               <input type="button" class="delSingleOrder-Btn" data-id="${
                 el.id
-              }" value="刪除" />
+              }"  value="刪除" />
             </td>
           </tr>
             `;
   });
   orderPageTable.querySelector("tbody").innerHTML = html;
   let discardBtns = document.querySelectorAll(".delSingleOrder-Btn");
+  const orderStatus = document.querySelectorAll(".orderStatus");
   console.log("discardBtns:", discardBtns);
+  console.log("orderStatus", orderStatus);
 
   discardBtns.forEach((btn) => {
     console.log("btn", btn);
     btn.addEventListener("click", orderBtnHandler);
+  });
+
+  orderStatus.forEach((btn) => {
+    btn.addEventListener("click", orderStatusBtnHandler);
   });
 }
 
@@ -122,7 +172,6 @@ function adminManageHandler() {
         renderOrderPageTable(orders);
       }
     });
-    
 }
 
 function init() {
