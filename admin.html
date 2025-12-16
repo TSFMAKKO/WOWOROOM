@@ -4,8 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WOWOROOM</title>
-    <link rel="stylesheet" href="./style/admin.css">
-
+    <link rel="stylesheet" href="./style/admin.css" />
   </head>
   <body>
     <nav class="topBar">
@@ -105,26 +104,6 @@
     <!-- axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-      // C3.js
-      let chart = c3.generate({
-        bindto: "#chart", // HTML 元素綁定
-        data: {
-          type: "pie",
-          columns: [
-            ["Louvre 雙人床架", 1],
-            ["Antony 雙人床架", 2],
-            ["Anty 雙人床架", 3],
-            ["其他", 4],
-          ],
-          colors: {
-            "Louvre 雙人床架": "#DACBFF",
-            "Antony 雙人床架": "#9D7FEA",
-            "Anty 雙人床架": "#5434A7",
-            其他: "#301E5F",
-          },
-        },
-      });
-
       // 預設 JS，請同學不要修改此處
       let menuOpenBtn = document.querySelector(".menuToggle");
       let linkBtn = document.querySelectorAll(".topBar-menu a");
@@ -146,7 +125,7 @@
         menu.classList.remove("openMenu");
       }
     </script>
-
+    
     <script src="./js/admin.js"></script>
   </body>
 </html>
