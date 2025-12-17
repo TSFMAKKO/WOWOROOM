@@ -21,6 +21,7 @@ function adminLoginHandler() {
 
 function orderBtnHandler(e) {
   const id = e.target.dataset.id;
+  if (!confirm(`確認刪除 ${id} 訂單`)) return;
   console.log("id:", id);
   //   /api/livejs/v1/admin/{api_path}/orders/{id}
   const apiPath = `${baseUrl}/api/livejs/v1/admin/yuschool/orders/${id}`;
@@ -185,6 +186,7 @@ function renderOrderPageTable(orders) {
 }
 
 function adminDiscardAllBtnHandler(e) {
+  if (!confirm("確認刪除全部")) return;
   // /api/livejs/v1/admin/{api_path}/orders
   const apiPath = `${baseUrl}/api/livejs/v1/admin/yuschool/orders`;
   //   const payload = {
