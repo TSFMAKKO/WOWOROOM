@@ -181,6 +181,9 @@ function renderCartTable(carts, finalTotal) {
 
 function orderInfoHabndler(e) {
   e.preventDefault();
+  if (!confirm(`確認送出訂單`)) {
+    return;
+  }
   console.log("e:", e.target["姓名"].value);
   const name = e.target["姓名"].value.trim();
   const tel = e.target["電話"].value.trim();
