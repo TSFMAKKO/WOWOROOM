@@ -48,34 +48,39 @@ function renderCards(products) {
   let html = ``;
   products.forEach((product) => {
     html += `
-                     </li>
-                          <li class="productCard">
-                          <h4 class="productType">${product.category}</h4>
-                          <img
-                              src="${product.images}"
-                              alt="${product.id}"
-                          />
-                          <a href="#" data-id="${product.id}" class="addCardBtn">加入購物車</a>
-                          <h3>${product.title}</h3>
-                          <del class="originPrice">NT$${product.origin_price}</del>
-                          <p class="nowPrice">NT$${product.price}</p>
-                      `;
+        </li>
+            <li class="productCard">
+            <h4 class="productType">${product.category}</h4>
+            <img
+                src="${product.images}"
+                alt="${product.id}"
+            />
+            <a href="#" data-id="${
+              product.id
+            }" class="addCardBtn">加入購物車</a>
+            <h3>${product.title}</h3>
+            <del class="originPrice">NT$${product.origin_price.toLocaleString()}</del>
+            <p class="nowPrice">NT$${product.price.toLocaleString()}</p>
+        `;
   });
   productWrapDOM.innerHTML = html;
-  const addCardBtns = productWrapDOM.querySelectorAll(".addCardBtn");
-
-  addCardBtns.forEach((Btn) => {
-    Btn.addEventListener("click", addCardBtnHandler);
+  productWrapDOM.addEventListener("click", function (e) {
+    console.log("e:", e.target.nodeName);
+    e.target.nodeName === "A" && addCardBtnHandler(e);
   });
 }
 
 function productSelectHanlder(e) {
   let category = e.target.value;
   console.log("category:", category);
-  let categorys = products.filter((p) => p.category === category);
-  console.log("categorys:", categorys);
+  let categorys = products.filter((p) => {
+    if (category === "全部") {
+      return true;
+    }
 
-  if (category === "全部") categorys = products;
+    return p.category === category;
+  });
+  console.log("categorys:", categorys);
 
   renderCards(categorys);
 }
@@ -83,6 +88,9 @@ function productSelectHanlder(e) {
 function discardBtnHandler(e) {
   e.preventDefault();
   const id = e.target.dataset.id;
+  if (!confirm(`確認刪除`)) {
+    return;
+  }
   console.log("id:", id);
   // /api/livejs/v1/customer/{api_path}/carts/{id}
 
@@ -101,6 +109,7 @@ function discardBtnHandler(e) {
 function discardAllBtnHandler(e) {
   e.preventDefault();
   console.log("e:", e.target);
+  if (!confirm("確認刪除全部")) return;
   // 打刪除 api
   // /api/livejs/v1/customer/{api_path}/carts
   // {
@@ -137,7 +146,9 @@ function renderCartTable(carts, finalTotal) {
                       cart.product.price * cart.quantity
                     ).toLocaleString()}</td>
                     <td class="discardBtn">
-                      <a href="#" data-id="${cart.id}" class="material-icons"> clear </a>
+                      <a href="#" data-id="${
+                        cart.id
+                      }" class="material-icons"> clear </a>
                     </td>
                   </tr>
                   `;
@@ -170,6 +181,9 @@ function renderCartTable(carts, finalTotal) {
 
 function orderInfoHabndler(e) {
   e.preventDefault();
+  if (!confirm(`確認送出訂單`)) {
+    return;
+  }
   console.log("e:", e.target["姓名"].value);
   const name = e.target["姓名"].value.trim();
   const tel = e.target["電話"].value.trim();

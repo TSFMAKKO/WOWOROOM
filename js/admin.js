@@ -6,7 +6,7 @@ const discardAllBtn = document.querySelector(".discardAllBtn");
 
 let discardBtns;
 let chartObj = {};
-let chartArr = [];
+let chartArr;
 
 console.log("topBarMeun:", topBarMeun[0]);
 
@@ -21,6 +21,7 @@ function adminLoginHandler() {
 
 function orderBtnHandler(e) {
   const id = e.target.dataset.id;
+  if (!confirm(`確認刪除 ${id} 訂單`)) return;
   console.log("id:", id);
   //   /api/livejs/v1/admin/{api_path}/orders/{id}
   const apiPath = `${baseUrl}/api/livejs/v1/admin/yuschool/orders/${id}`;
@@ -85,7 +86,7 @@ function orderStatusBtnHandler(e) {
 
 function renderChart() {
   let chart = c3.generate({
-    bindto: "#chart", // HTML 元素綁定
+    bindto: "#chart",
     data: {
       type: "pie",
       columns: chartArr,
@@ -111,9 +112,8 @@ function renderOrderPageTable(orders) {
     let productsHtml = ``;
     el.products.forEach((product) => {
       productsHtml += `<p>${product.title} x ${product.quantity}</p>`;
-      //   chartObj[product.title] = (chartObj[product.title] || 0) + 1;
-
-      chartObj[product.title] = product.quantity;
+      chartObj[product.title] =
+        (chartObj[product.title] || 0) + product.quantity;
     });
 
     html += `
@@ -159,13 +159,34 @@ function renderOrderPageTable(orders) {
     btn.addEventListener("click", orderStatusBtnHandler);
   });
 
-  chartArr = Object.entries(chartObj);
+  console.log("chartObj:", chartObj);
+
+  let chartArrTemp = Object.entries(chartObj);
+  chartArrTemp.sort((a, b) => b[1] - a[1]);
+  console.log("chartArrTemp:", chartArrTemp);
+  const top3Data = chartArrTemp.slice(0, 3);
+  let otherData = chartArrTemp.slice(3, chartArrTemp.length - 1);
+  console.log("top3Data:", top3Data, "otherData:", otherData);
+
+  otherData = otherData.reduce(
+    (arr, data) => {
+      console.log("data:", data[1], typeof data[1]);
+      arr[0][1] += data[1];
+      return arr;
+    },
+    [["其他", 0]]
+  );
+
+  console.log("otherData:", otherData);
+
+  chartArr = [...top3Data, ...otherData];
   console.log("chartArr", chartArr);
 
   renderChart();
 }
 
 function adminDiscardAllBtnHandler(e) {
+  if (!confirm("確認刪除全部")) return;
   // /api/livejs/v1/admin/{api_path}/orders
   const apiPath = `${baseUrl}/api/livejs/v1/admin/yuschool/orders`;
   //   const payload = {
