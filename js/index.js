@@ -67,18 +67,20 @@ function renderCards(products) {
   productWrapDOM.addEventListener("click", function (e) {
     console.log("e:", e.target.nodeName);
     e.target.nodeName === "A" && addCardBtnHandler(e);
-    
   });
-
 }
 
 function productSelectHanlder(e) {
   let category = e.target.value;
   console.log("category:", category);
-  let categorys = products.filter((p) => p.category === category);
-  console.log("categorys:", categorys);
+  let categorys = products.filter((p) => {
+    if (category === "全部") {
+      return true;
+    }
 
-  if (category === "全部") categorys = products;
+    return p.category === category;
+  });
+  console.log("categorys:", categorys);
 
   renderCards(categorys);
 }
