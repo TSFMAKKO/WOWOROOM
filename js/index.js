@@ -88,6 +88,9 @@ function productSelectHanlder(e) {
 function discardBtnHandler(e) {
   e.preventDefault();
   const id = e.target.dataset.id;
+  if (!confirm(`確認刪除`)) {
+    return;
+  }
   console.log("id:", id);
   // /api/livejs/v1/customer/{api_path}/carts/{id}
 
@@ -106,6 +109,7 @@ function discardBtnHandler(e) {
 function discardAllBtnHandler(e) {
   e.preventDefault();
   console.log("e:", e.target);
+  if (!confirm("確認刪除全部")) return;
   // 打刪除 api
   // /api/livejs/v1/customer/{api_path}/carts
   // {
