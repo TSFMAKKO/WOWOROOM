@@ -85,12 +85,22 @@ function productSelectHanlder(e) {
   renderCards(categorys);
 }
 
-function discardBtnHandler(e) {
+async function discardBtnHandler(e) {
   e.preventDefault();
   const id = e.target.dataset.id;
-  if (!confirm(`確認刪除`)) {
+  const result = await Swal.fire({
+    title: "確定要刪除嗎？",
+    text: "刪除後將無法恢復",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "刪除",
+    cancelButtonText: "取消",
+  });
+
+  if (!result.isConfirmed) {
     return;
   }
+
   console.log("id:", id);
   // /api/livejs/v1/customer/{api_path}/carts/{id}
 
@@ -106,10 +116,21 @@ function discardBtnHandler(e) {
     });
 }
 
-function discardAllBtnHandler(e) {
+async function discardAllBtnHandler(e) {
   e.preventDefault();
   console.log("e:", e.target);
-  if (!confirm("確認刪除全部")) return;
+  const result = await Swal.fire({
+    title: "確定要刪除全部嗎？",
+    text: "刪除後將無法恢復",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "刪除",
+    cancelButtonText: "取消",
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
   // 打刪除 api
   // /api/livejs/v1/customer/{api_path}/carts
   // {
@@ -120,7 +141,13 @@ function discardAllBtnHandler(e) {
   //   "message": "購物車產品已全部清空。 (*´▽`*)"
   // }
   const apiPath = `${baseUrl}/api/livejs/v1/customer/yuschool/carts`;
-  axios.delete(apiPath).then((response) => {
+  axios.delete(apiPath).then(async (response) => {
+     await Swal.fire({
+        title: "成功刪除",
+        text: "",
+        // icon: "success",
+        confirmButtonText: "OK",
+      });
     console.log("全部刪除 res:", response.data);
     renderCartTable(response.data.carts, response.data.finalTotal);
   });
@@ -179,9 +206,17 @@ function renderCartTable(carts, finalTotal) {
   discardAllBtn.addEventListener("click", discardAllBtnHandler);
 }
 
-function orderInfoHabndler(e) {
+async function orderInfoHabndler(e) {
   e.preventDefault();
-  if (!confirm(`確認送出訂單`)) {
+  const result = await Swal.fire({
+    title: "確定送出訂單",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "送出",
+    cancelButtonText: "取消",
+  });
+
+  if (!result.isConfirmed) {
     return;
   }
   console.log("e:", e.target["姓名"].value);
@@ -214,7 +249,12 @@ function orderInfoHabndler(e) {
     .then((response) => {
       console.log("訂單回應:", response.data);
       if (response.data.status) {
-        alert("訂單建立成功！");
+        Swal.fire({
+          title: "訂單回應",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
       } else {
         alert(response.data.message);
       }
