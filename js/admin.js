@@ -13,15 +13,43 @@ console.log("topBarMeun:", topBarMeun[0]);
 let token = "";
 let orders = [];
 
-function adminLoginHandler() {
+async function adminLoginHandler() {
   console.log("adminLogin");
-  token = prompt("輸入token", "AJHFU1C9nCPFhGfn6Gnr5RqsYGH3");
+  // token = prompt("輸入token", "AJHFU1C9nCPFhGfn6Gnr5RqsYGH3");
+  const result = await Swal.fire({
+    title: `輸入token`,
+    input: "text",
+    inputValue: "AJHFU1C9nCPFhGfn6Gnr5RqsYGH3",
+    // inputPlaceholder:"AJHFU1C9nCPFhGfn6Gnr5RqsYGH3",
+    text: "",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "確定",
+    cancelButtonText: "取消",
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  token = result.value;
   console.log("token", token);
 }
 
-function orderBtnHandler(e) {
+async function orderBtnHandler(e) {
   const id = e.target.dataset.id;
-  if (!confirm(`確認刪除 ${id} 訂單`)) return;
+  const result = await Swal.fire({
+    title: `確認刪除 ${id} 訂單`,
+    text: "刪除後將無法恢復",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "刪除",
+    cancelButtonText: "取消",
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
   console.log("id:", id);
   //   /api/livejs/v1/admin/{api_path}/orders/{id}
   const apiPath = `${baseUrl}/api/livejs/v1/admin/yuschool/orders/${id}`;
@@ -42,7 +70,7 @@ function orderBtnHandler(e) {
     });
 }
 
-function orderStatusBtnHandler(e) {
+async function orderStatusBtnHandler(e) {
   e.preventDefault();
   const id = e.target.dataset.id;
   let paid = e.target.dataset.paid;
@@ -60,28 +88,40 @@ function orderStatusBtnHandler(e) {
   //   }
   // }
 
-  let isChange = confirm(`確認修改成 ${!paid}`);
+  const result = await Swal.fire({
+    title: `確認修改成${!paid ? "『已付款』" : "『未付款』"}`,
+    text: "",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "確定",
+    cancelButtonText: "取消",
+  });
 
-  if (isChange) {
-    const payload = {
-      data: {
-        id,
-        paid: !paid,
-      },
-    };
-
-    axios
-      .put(apiPath, payload, {
-        headers: {
-          Authorization: `${token}`,
-        },
-      })
-      .then((res) => {
-        console.log("res:", res.data);
-        orders = res.data.orders;
-        renderOrderPageTable(orders);
-      });
+  if (!result.isConfirmed) {
+    return;
   }
+  // let isChange = confirm(`確認修改成 ${!paid}`);
+
+  // if (isChange) {
+  const payload = {
+    data: {
+      id,
+      paid: !paid,
+    },
+  };
+
+  axios
+    .put(apiPath, payload, {
+      headers: {
+        Authorization: `${token}`,
+      },
+    })
+    .then((res) => {
+      console.log("res:", res.data);
+      orders = res.data.orders;
+      renderOrderPageTable(orders);
+    });
+  // }
 }
 
 function renderChart() {
@@ -133,7 +173,7 @@ function renderOrderPageTable(orders) {
             )}</td>
             <td class="orderStatus">
               <a href="#" data-id="${el.id}" data-paid="${el.paid}">${
-      el.paid ? "已付款" : "未處理"
+      el.paid ? "已付款" : "未付款"
     }</a>
             </td>
             <td>
@@ -185,8 +225,19 @@ function renderOrderPageTable(orders) {
   renderChart();
 }
 
-function adminDiscardAllBtnHandler(e) {
-  if (!confirm("確認刪除全部")) return;
+async function adminDiscardAllBtnHandler(e) {
+  const result = await Swal.fire({
+    title: "確定要刪除全部嗎？",
+    text: "刪除後將無法恢復",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "刪除",
+    cancelButtonText: "取消",
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
   // /api/livejs/v1/admin/{api_path}/orders
   const apiPath = `${baseUrl}/api/livejs/v1/admin/yuschool/orders`;
   //   const payload = {
